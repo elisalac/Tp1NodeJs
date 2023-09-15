@@ -1,4 +1,4 @@
-//<span class="cmdIcon fa-solid fa-ellipsis-vertical"></span>
+
 let contentScrollPosition = 0;
 Init_UI();
 
