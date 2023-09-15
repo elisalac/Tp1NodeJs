@@ -64,7 +64,7 @@ async function renderBookmarks() {
             saveContentScrollPosition();
             renderDeleteBookmarkForm(parseInt($(this).attr("deleteBookmarkId")));
         });
-        $(".bookmarkRow").on("click", function (e) { e.preventDefault(); })
+        $(".bookmarkRow").on("click", function (e) { })
     } else {
         renderError("Service introuvable");
     }
@@ -118,9 +118,11 @@ async function renderDeleteBookmarkForm(id) {
             <div class="bookmarkRow" bookmark_id=${bookmark.Id}">
                 <div class="bookmarkContainer">
                     <div class="bookmarkLayout">
-                        <div class="bookmarkTitle">${bookmark.Title}</div>
-                        <div class="bookmarkURL">${bookmark.Url}</div>
-                        <div class="bookmarkCat">${bookmark.Catégorie}</div>
+                        <div style="display:'grid'">
+                        <a href="${bookmark.Url}"  target="_blank"><img class="bookmarkLogo" src="https://www.google.com/s2/favicons?sz=32&domain=${bookmark.Url}"></a>
+                            <span class="bookmarkTitle">${bookmark.Title}</span>
+                        </div>
+                        <span class="bookmarkCat">${bookmark.Catégorie}</span>
                     </div>
                 </div>  
             </div>   
@@ -233,7 +235,7 @@ function renderBookmark(bookmark) {
         <div class="bookmarkContainer noselect">
             <div class="bookmarkLayout">
                 <div style="display:'grid'">
-                <a href="${bookmark.Url}"><img class="bookmarkLogo" src="https://www.google.com/s2/favicons?sz=32&domain=${bookmark.Url}"></a>
+                <a href="${bookmark.Url}"  target="_blank"><img class="bookmarkLogo" src="https://www.google.com/s2/favicons?sz=32&domain=${bookmark.Url}"></a>
                     <span class="bookmarkTitle">${bookmark.Title}</span>
                 </div>
                 <span class="bookmarkCat">${bookmark.Catégorie}</span>
@@ -247,29 +249,6 @@ function renderBookmark(bookmark) {
     `);
 }
 
-async function renderBookmarkCat(cat) {
-    showWaitingGif();
-    $("#actionTitle").text("Liste des bookmarks");
-    $("#createBookmark").show();
-    $("#abort").hide();
-    let catégorie = await API_GetBookmarkCat(cat);
-    eraseContent();
-    if (catégorie !== null) {
-        catégorie.forEach(bookmark => {
-            $("#content").append(renderBookmark(bookmark));
-        });
-        restoreContentScrollPosition();
-        // Attached click events on command icons
-        $(".editCmd").on("click", function () {
-            saveContentScrollPosition();
-            renderEditBookmarkForm(parseInt($(this).attr("editBookmarkId")));
-        });
-        $(".deleteCmd").on("click", function () {
-            saveContentScrollPosition();
-            renderDeleteBookmarkForm(parseInt($(this).attr("deleteBookmarkId")));
-        });
-        $(".bookmarkRow").on("click", function (e) { e.preventDefault(); })
-    } else {
-        renderError("Service introuvable");
-    }
+function renderCategory() {
+
 }

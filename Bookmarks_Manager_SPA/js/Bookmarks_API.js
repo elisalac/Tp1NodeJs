@@ -44,10 +44,10 @@ function API_DeleteBookmark(id) {
     });
 }
 
-function API_GetBookmarkCat(cat) {
+function API_GetCategory() {
     return new Promise(resolve => {
         $.ajax({
-            url: API_URL + "/" + cat,
+            url: API_URL,
             success: bookmark => { resolve(bookmark); },
             error: (xhr) => { console.log(xhr); resolve(null); }
         })
