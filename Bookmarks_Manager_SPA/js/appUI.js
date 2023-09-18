@@ -1,5 +1,7 @@
 //<span class="cmdIcon fa-solid fa-ellipsis-vertical"></span>
 let contentScrollPosition = 0;
+let selectedCat = '';
+let filterCat = '';
 Init_UI();
 
 function Init_UI() {
@@ -14,8 +16,11 @@ function Init_UI() {
     $('#aboutCmd').on("click", function () {
         renderAbout();
     });
-    $('#catCmd').on("click", function () {
-        renderBookmark();
+    $("#catCmd").on("click", function () {
+        renderBookmarks();
+    });
+    $("#ToutCmd").on("click", function () {
+        renderBookmarks();
     })
 }
 
@@ -49,11 +54,21 @@ async function renderBookmarks() {
     $("#createBookmark").show();
     $("#abort").hide();
     let bookmarks = await API_GetBookmarks();
+    let cats = [];
+
     eraseContent();
     if (bookmarks !== null) {
         bookmarks.forEach(bookmark => {
-            $("#content").append(renderBookmark(bookmark));
+            if (filterCat != '' && bookmark.Catégorie == filterCat) {
+                $("#content").append(renderBookmark(bookmark));
+            } else if (filterCat == '') {
+                $("#content").append(renderBookmark(bookmark));
+            }
+            if (!cats.includes(bookmark.Catégorie)) {
+                cats.push(bookmark.Catégorie);
+            }
         });
+        DisplayCats(cats, selectedCat);
         restoreContentScrollPosition();
         // Attached click events on command icons
         $(".editCmd").on("click", function () {
@@ -64,7 +79,17 @@ async function renderBookmarks() {
             saveContentScrollPosition();
             renderDeleteBookmarkForm(parseInt($(this).attr("deleteBookmarkId")));
         });
-        $(".bookmarkRow").on("click", function (e) { })
+        $("#ToutCmd").on("click", function () {
+            selectedCat = '';
+            filterCat = "";
+            renderBookmarks();
+        });
+        $(".bookmarkRow").on("click", function (e) { });
+        $(".categ").on("click", function () {
+            selectedCat = $(this).attr("id");
+            filterCat = selectedCat;
+            renderBookmarks();
+        })
     } else {
         renderError("Service introuvable");
     }
@@ -249,6 +274,18 @@ function renderBookmark(bookmark) {
     `);
 }
 
-function renderCategory() {
+function DisplayCats(cats, selectedCat) {
+    $('#catCmd').empty();
+    cats.forEach(categorie => {
+        $('#catCmd').append(renderCat(categorie, categorie == selectedCat));
+    });
+}
 
+function renderCat(categorie, selected = false) {
+    let cssCat = selected ? "menuIcon fa fa-check mx-2" : "menuIcon fa fa-fw mx-2";
+    return $(`
+        <div class="dropdown-item categ" id="${categorie}">
+            <i class="${cssCat}"></i> ${categorie}
+        </div>
+    `);
 }
